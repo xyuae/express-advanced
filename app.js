@@ -5,6 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nconf = require('nconf');
+var winston = require('winston');
+
+
+
+
+winston.error("Something wetn wrong");
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -24,8 +30,14 @@ nconf.file("config.json");
 nconf.defaults({
   "http": {
     "port": 3000
+  },
+  "logger": {
+    "fileLevel": "error"
   }
 }); // nconf.defaults
+
+winston.add(winston.transports.File, {"filename": "error.log", "level": nconf.get("logger:fileLevel")});
+winston.info('Initialized nconf');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
